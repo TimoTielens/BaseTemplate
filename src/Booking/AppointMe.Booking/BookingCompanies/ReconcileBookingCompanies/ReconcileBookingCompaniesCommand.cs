@@ -1,0 +1,3 @@
+namespace AppointMe.Booking.BookingCompanies.ReconcileBookingCompanies;
+
+public sealed record ReconcileBookingCompaniesCommand;

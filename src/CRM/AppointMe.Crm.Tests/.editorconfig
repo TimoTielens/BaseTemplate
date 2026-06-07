@@ -1,0 +1,22 @@
+# Test project naming rules — see CLAUDE.md "Test methods" convention.
+# No `root = true`: this file inherits formatting from the repo-root .editorconfig.
+
+[*.cs]
+
+# 1) Declare snake_case as the expected style for test methods,
+#    so Rider/ReSharper and IDE1006 stop flagging it as inconsistent.
+dotnet_naming_style.snake_case_style.capitalization        = all_lower
+dotnet_naming_style.snake_case_style.word_separator        = _
+
+dotnet_naming_symbols.test_methods.applicable_kinds            = method
+dotnet_naming_symbols.test_methods.applicable_accessibilities  = public, internal, private, protected, protected_internal, private_protected
+
+dotnet_naming_rule.test_methods_are_snake_case.symbols         = test_methods
+dotnet_naming_rule.test_methods_are_snake_case.style           = snake_case_style
+dotnet_naming_rule.test_methods_are_snake_case.severity        = none
+
+# 2) Belt-and-braces: silence the Roslyn analyzers that fire on
+#    underscore-bearing or non-Async-suffixed test names.
+dotnet_diagnostic.CA1707.severity    = none   # Identifiers should not contain underscores
+dotnet_diagnostic.IDE1006.severity   = none   # Naming rule violation
+dotnet_diagnostic.VSTHRD200.severity = none   # Async method names should end with "Async"

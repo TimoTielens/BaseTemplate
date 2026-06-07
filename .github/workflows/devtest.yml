@@ -1,0 +1,135 @@
+name: devtest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  NODE_VERSION: '22'
+  IMAGE_NAME: appointme-api
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+          cache-dependency-path: src/AppointMe.Frontend/yarn.lock
+
+      - name: Restore .NET
+        run: dotnet restore AppointMe.sln
+
+      - name: Build .NET
+        run: dotnet build AppointMe.sln --no-restore -c Release
+
+      - name: Test
+        run: dotnet test AppointMe.sln --no-build -c Release --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/TestResults/**/*'
+          if-no-files-found: warn
+
+      - name: Frontend install
+        working-directory: src/AppointMe.Frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Frontend lint
+        working-directory: src/AppointMe.Frontend
+        run: yarn lint
+
+      - name: Frontend build
+        working-directory: src/AppointMe.Frontend
+        run: yarn build
+
+  publish-image:
+    name: Build and push image
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: ACR login
+        run: az acr login --name ${{ secrets.ACR_NAME }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Compute image tag
+        id: meta
+        run: echo "tag=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: src/AppointMe.Api/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.tag }}
+            ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to App Service
+    runs-on: ubuntu-latest
+    needs: publish-image
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    environment: devtest
+    steps:
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Update container image on App Service
+        run: |
+          az webapp config container set \
+            --name ${{ secrets.APP_SERVICE_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --container-image-name ${{ needs.publish-image.outputs.image_tag }}
+
+      - name: Restart App Service
+        run: az webapp restart --name ${{ secrets.APP_SERVICE_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
+
+      - name: Show URL
+        run: |
+          URL=$(az webapp show --name ${{ secrets.APP_SERVICE_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --query defaultHostName -o tsv)
+          echo "## Deployed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Image: \`${{ needs.publish-image.outputs.image_tag }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- URL: https://$URL" >> "$GITHUB_STEP_SUMMARY"

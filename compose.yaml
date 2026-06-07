@@ -1,0 +1,84 @@
+# Docker Compose for AppointMe's local backing services.
+#
+# This starts the SAME dependencies the .NET Aspire host (src/AppointMe.Aspire)
+# brings up — SQL Server, Keycloak, and Mailpit — on the SAME ports and with the
+# SAME credentials. Use it when you'd rather run the API and frontend yourself
+# instead of having Aspire orchestrate everything. See the README "Quick start".
+#
+# Unlike Aspire, Compose runs ONLY the dependencies. You start the API and the
+# frontend yourself:
+#   dotnet run --project src/AppointMe.Api      # API on https://localhost:7233
+#   cd src/AppointMe.Frontend && yarn dev        # frontend on https://localhost:5173
+#
+# One-time setup before the first `docker compose up`: export the trusted
+# ASP.NET Core HTTPS dev certificate that Keycloak serves on https://localhost:8082
+# (so both the API and your browser trust it — exactly what Aspire does for you):
+#
+#   dotnet dev-certs https --trust
+#   dotnet dev-certs https --format PEM --no-password -ep docker/keycloak/certs/keycloak.crt
+#
+# That writes docker/keycloak/certs/keycloak.crt and keycloak.key (git-ignored).
+
+name: appointme
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2025-CU1-ubuntu-24.04
+    container_name: appointme-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Password1"
+    ports:
+      - "60740:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6
+    container_name: appointme-keycloak
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: "true"
+      KC_HTTPS_PORT: "8443"
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/certs/keycloak.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/certs/keycloak.key
+    ports:
+      - "8082:8443"
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+      - ./src/AppointMe.Aspire/appointme-realm.json:/opt/keycloak/data/import/appointme-realm.json:ro
+      - ./docker/keycloak/certs/keycloak.crt:/opt/keycloak/certs/keycloak.crt:ro
+      - ./docker/keycloak/certs/keycloak.key:/opt/keycloak/certs/keycloak.key:ro
+    healthcheck:
+      # The image ships no curl/wget, so probe the HTTPS port with bash's /dev/tcp.
+      # The port only accepts connections once the realm import has finished.
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8443"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: appointme-mailpit
+    networks:
+      default:
+        # The imported realm sends SMTP to host "Mailpit" (appointme-realm.json
+        # -> smtpServer.host), so expose that name on the Compose network.
+        aliases:
+          - Mailpit
+    ports:
+      - "8026:8025"   # web UI  -> http://localhost:8026
+      - "1026:1025"   # SMTP
+
+volumes:
+  sqlserver-data:
+  keycloak-data:

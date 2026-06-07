@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppointMe.Shared\AppointMe.Shared.csproj" />
+    <ProjectReference Include="..\..\Organizations\AppointMe.Organizations.Contracts\AppointMe.Organizations.Contracts.csproj" />
+    <ProjectReference Include="..\AppointMe.Identity.Contracts\AppointMe.Identity.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.Graph" />
+    <PackageReference Include="Schick.Keycloak.RestApiClient" />
+    <PackageReference Include="WolverineFx" />
+    <PackageReference Include="WolverineFx.SqlServer" />
+    <PackageReference Include="WolverineFx.EntityFrameworkCore" />
+  </ItemGroup>
+
+</Project>

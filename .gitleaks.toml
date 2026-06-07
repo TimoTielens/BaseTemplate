@@ -1,0 +1,30 @@
+# gitleaks configuration for AppointMe.
+#
+# Runs the full default ruleset, then allowlists the handful of *local-development*
+# credentials that are committed on purpose. These only protect containers on a
+# developer's machine (local SQL Server, local Keycloak, the Service Bus emulator)
+# and are never reused in any real deployment — production secrets live in Azure
+# Key Vault (see infra/). The allowlist matches by value, NOT by file, so a real
+# secret accidentally added to any of these files will still be caught.
+
+title = "AppointMe"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Committed local-development-only credentials and placeholders"
+regexTarget = "match"
+regexes = [
+  # Local SQL Server 'sa' password (compose.yaml, appsettings.Development.json)
+  '''Password1''',
+  # Local Keycloak client secrets (appsettings.Development.json, appointme-realm.json) —
+  # valid only against the local Keycloak realm.
+  '''d7BP1AYRxH9Ku2yGQ99AzBApfbxyJhVB''',
+  '''X3RcYV9FL3FSDvHh5dBYNURvxdZzawii''',
+  # Azure Service Bus *emulator* placeholder SAS key (UseDevelopmentEmulator=true).
+  '''SAS_KEY_VALUE''',
+  # Public, well-known Azure built-in role definition ID for "Key Vault Secrets User"
+  # (infra Bicep) — a fixed Azure constant, not a secret. Flagged by generic-api-key.
+  '''4633458b-17de-408a-b874-0445c86b69e6''',
+]

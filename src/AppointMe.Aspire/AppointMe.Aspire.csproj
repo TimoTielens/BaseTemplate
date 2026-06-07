@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.3.5" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>edaf3021-5220-4b07-baff-a801291f250e</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Azure.ServiceBus" />
+    <PackageReference Include="Aspire.Hosting.Keycloak" />
+    <PackageReference Include="Aspire.Hosting.NodeJs" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.NodeJS.Extensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppointMe.Api\AppointMe.Api.csproj" />
+  </ItemGroup>
+</Project>
