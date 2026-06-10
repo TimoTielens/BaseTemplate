@@ -1,6 +1,6 @@
 # AppointMe
 
-A production-grade **SaaS starter template** for appointment-based businesses, built for advanced .NET teams, solo founders, and agencies who want a real foundation instead of a toy sample.
+A production-grade **SaaS starter template** for advanced .NET teams, solo founders, and agencies who want a real foundation.
 
 AppointMe is a modular monolith (.NET 10 + React 19) with the hard parts already solved: multi-tenancy, authentication, authorization, CQRS, domain events, durable messaging, and a typed frontend wired to the backend contract. Clone it, press F5, and you have a running multi-tenant app — then build your product on top.
 
