@@ -10,6 +10,8 @@ Try the live demo with seeded data at **[app.appointme.dev](https://app.appointm
 
 It's a shared public demo seeded with sample data — other visitors' activity may be visible, and the environment may be reset periodically.
 
+![AppointMe live demo](./docs/images/live-demo.png)
+
 ## What's inside
 
 - **Modular monolith** — Identity, Organizations, CRM, and Booking, each a bounded context with its own `DbContext` and schema, organized by vertical slice.
@@ -65,6 +67,8 @@ dotnet run
 **Prefer your IDE?** Open `AppointMe.sln` in Visual Studio or Rider, set **`AppointMe.Aspire`** as the startup project, and press **F5**. That's the entire setup.
 
 Either way, the [.NET Aspire dashboard](https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/overview) opens automatically. Wait for every resource to turn **Running** (green) — the API waits for SQL Server and Keycloak to be healthy before it starts.
+
+![AppointMe running in the .NET Aspire dashboard with all dependencies running](./docs/images/aspire-dashboard.png)
 
 What happens on startup, with no action from you:
 
