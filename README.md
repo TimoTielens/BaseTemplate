@@ -4,10 +4,19 @@ A production-grade **SaaS starter template** for advanced .NET teams, solo found
 
 AppointMe is a modular monolith (.NET 10 + React 19) with the hard parts already solved: multi-tenancy, authentication, authorization, CQRS, domain events, durable messaging, and a typed frontend wired to the backend contract. Clone it, press F5, and you have a running multi-tenant app — then build your product on top.
 
+## Live demo
+
+Try the live demo with seeded data at **[app.appointme.dev](https://app.appointme.dev)**.
+
+> **Email:** `demo@appointme.dev`  
+> **Password:** `AppointMe1`
+
+It's a shared public demo seeded with sample data — other visitors' activity may be visible, and the environment may be reset periodically.
+
 ## What's inside
 
 - **Modular monolith** — Identity, Organizations, CRM, and Booking, each a bounded context with its own `DbContext` and schema, organized by vertical slice.
-- **Auth done properly** — Keycloak (OIDC) with a hybrid scheme: JWT Bearer for the API, cookies for browser flows. Sign-up, email verification, and password reset included.
+- **Auth done properly** — OIDC with a hybrid scheme: JWT Bearer for the API, cookies for browser flows. Keycloak for local development, Entra External ID for the Azure deployment — swappable behind the app's own provisioning flow. Sign-up, email verification, and password reset included.
 - **Multi-tenancy** — company resolution via header/claim with EF Core query filters, so tenant isolation is enforced at the data layer.
 - **CQRS + DDD** — writes through EF Core aggregates and domain events; reads through Dapper. Async messaging via Wolverine with a durable SQL transport.
 - **Permission system** — auto-discovered, role-based permissions with default grant policies.
