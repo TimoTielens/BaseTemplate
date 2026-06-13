@@ -6,7 +6,7 @@ AppointMe is a modular monolith (.NET 10 + React 19) with the hard parts already
 
 ## Live demo
 
-Try the live demo with seeded data at **[app.appointme.dev](https://app.appointme.dev/api/v1/login/demo)**. No signup required!
+Try the **[live demo](https://app.appointme.dev/api/v1/login/demo)** — seeded multi-tenant instance, no signup required.
 
 It's a shared public demo seeded with sample data — other visitors' activity may be visible, and the environment may be reset periodically.
 
