@@ -1,6 +1,6 @@
 # AppointMe
 
-A production-grade **SaaS starter template** for advanced .NET teams, solo founders, and agencies who want a real foundation.
+A production-grade **modular-monolith .NET 10 SaaS foundation** for advanced .NET teams, solo founders, and agencies who want a real base.
 
 AppointMe is a modular monolith (.NET 10 + React 19) with the hard parts already solved: multi-tenancy, authentication, authorization, CQRS, domain events, durable messaging, and a typed frontend wired to the backend contract. Clone it, press F5, and you have a running multi-tenant app — then build your product on top.
 
@@ -16,9 +16,9 @@ It's a shared public demo seeded with sample data — other visitors' activity m
 
 - **Modular monolith** — Identity, Organizations, CRM, and Booking, each a bounded context with its own `DbContext` and schema, organized by vertical slice.
 - **Auth done properly** — OIDC with a hybrid scheme: JWT Bearer for the API, cookies for browser flows. Keycloak for local development, Entra External ID for the Azure deployment — swappable behind the app's own provisioning flow. Sign-up, email verification, and password reset included.
-- **Multi-tenancy** — company resolution via header/claim with EF Core query filters, so tenant isolation is enforced at the data layer.
+- **Multi-tenancy** — company resolution via header/claim with EF Core query filters on a command path, raw Dapper reads carry the tenant predicate by convention.
 - **CQRS + DDD** — writes through EF Core aggregates and domain events; reads through Dapper. Async messaging via Wolverine with a durable SQL transport.
-- **Permission system** — auto-discovered, role-based permissions with default grant policies.
+- **Permission system** — auto-discovered, role-based permissions with default grant policies and conflic resolutions strategies.
 - **Typed frontend** — React 19 + Vite 7 + Tailwind 4, TanStack Query hooks and TypeScript types generated directly from the backend OpenAPI spec (orval).
 - **One-command local stack** — .NET Aspire orchestrates SQL Server, Keycloak, Mailpit, the API, and the frontend, with database migrations applied and demo data seeded automatically. Prefer to skip Aspire? A matching `compose.yaml` runs the same backing services so you can launch the API and frontend yourself.
 
@@ -143,7 +143,7 @@ src/
 ├── AppointMe.Aspire/        # .NET Aspire orchestrator — the F5 entry point for local dev
 ├── AppointMe.Api/           # ASP.NET Core API host (endpoints auto-discovered)
 ├── AppointMe.Shared/        # Shared domain abstractions, value objects, infrastructure
-├── Identity/                # Authentication & user provisioning (Keycloak)
+├── Identity/                # Authentication & user provisioning (Keycloak, Entra)
 ├── Organizations/           # Companies, employees, invitations, onboarding
 ├── CRM/                     # Customer management
 ├── Booking/                 # Appointments & scheduling
@@ -185,7 +185,7 @@ yarn generate:api   # regenerate the typed API client from the backend OpenAPI s
 
 - **Backend:** .NET 10, C# 14, EF Core 10, Wolverine 5.9, Dapper
 - **Frontend:** React 19, TypeScript 5.8, Vite 7, Tailwind CSS 4, TanStack Query
-- **Infrastructure:** SQL Server 2022/2025, Keycloak, Azure Service Bus emulator, orchestrated with .NET Aspire
+- **Infrastructure:** SQL Server 2022/2025, Keycloak, orchestrated with .NET Aspire
 
 ## License
 
