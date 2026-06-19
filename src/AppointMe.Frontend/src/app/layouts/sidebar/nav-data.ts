@@ -1,5 +1,5 @@
 import { Permission } from '@/api/appointme.schemas';
-import { CalendarIcon, LucideIcon, ShieldIcon, UserCogIcon, UsersIcon } from 'lucide-react';
+import { CalendarIcon, ChartPieIcon, LucideIcon, ShieldIcon, UserCogIcon, UsersIcon } from 'lucide-react';
 
 export const navData: NavData = {
     navMain: [
@@ -9,6 +9,13 @@ export const navData: NavData = {
             navId: 'appointments',
             icon: CalendarIcon,
             permission: 'appointments:view',
+        },
+        {
+            title: 'Dashboard',
+            url: '/dashboard',
+            navId: 'dashboard',
+            icon: ChartPieIcon,
+            pro: true,
         },
         {
             title: 'Team',
@@ -47,4 +54,5 @@ export interface NavItem {
     navId: string;
     icon?: LucideIcon;
     permission?: Permission;
+    pro?: boolean;
 }

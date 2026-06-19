@@ -1,3 +1,4 @@
+import { ProBadge } from './pro-badge';
 import { useCurrentUser } from '@/components/auth';
 import {
     Avatar,
@@ -62,14 +63,17 @@ export const NavUser = () => {
                             <DropdownMenuItem onClick={closeOnMobile}>
                                 <UserCircleIcon />
                                 Account
+                                <ProBadge />
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={closeOnMobile}>
                                 <CreditCardIcon />
                                 Billing
+                                <ProBadge />
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={closeOnMobile}>
                                 <BellIcon />
                                 Notifications
+                                <ProBadge />
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

@@ -1,4 +1,5 @@
 import { NavItem } from './nav-data';
+import { ProBadge } from './pro-badge';
 import { useActiveNavIds } from '@/app/router';
 import { useUserAccess } from '@/components/auth/user-access-context';
 import {
@@ -29,20 +30,33 @@ export const NavMain = ({ items, label }: NavMainProps) => {
                 <SidebarMenu>
                     {items
                         .filter(item => !item.permission || permissions.includes(item.permission))
-                        .map(item => (
-                            <SidebarMenuItem key={item.title}>
-                                <SidebarMenuButton
-                                    tooltip={item.title}
-                                    asChild
-                                    isActive={activeNavIds.has(item.navId)}
-                                >
-                                    <Link to={item.url} onClick={() => isMobile && setOpenMobile(false)}>
-                                        {item.icon && <item.icon />}
-                                        <span>{item.title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
+                        .map(item => {
+                            const content = (
+                                <>
+                                    {item.icon && <item.icon />}
+                                    <span>{item.title}</span>
+                                    {item.pro && <ProBadge />}
+                                </>
+                            );
+
+                            return (
+                                <SidebarMenuItem key={item.title}>
+                                    {item.pro ? (
+                                        <SidebarMenuButton tooltip={item.title}>{content}</SidebarMenuButton>
+                                    ) : (
+                                        <SidebarMenuButton
+                                            tooltip={item.title}
+                                            asChild
+                                            isActive={activeNavIds.has(item.navId)}
+                                        >
+                                            <Link to={item.url} onClick={() => isMobile && setOpenMobile(false)}>
+                                                {content}
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    )}
+                                </SidebarMenuItem>
+                            );
+                        })}
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>
