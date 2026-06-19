@@ -4,10 +4,10 @@
 # Stage 1: frontend bundle
 FROM node:22-alpine AS frontend
 WORKDIR /src
-COPY src/AppointMe.Frontend/package.json src/AppointMe.Frontend/yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY src/AppointMe.Frontend/package.json src/AppointMe.Frontend/package-lock.json ./
+RUN npm ci
 COPY src/AppointMe.Frontend/ ./
-RUN yarn build
+RUN npm run build
 
 # Stage 2: API publish
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build

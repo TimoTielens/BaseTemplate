@@ -1,0 +1,16 @@
+﻿<Solution>
+  <Folder Name="/Booking/" />
+  <Folder Name="/CRM/">
+    <Project Path="src\CRM\AppointMe.Crm.Contracts\AppointMe.Crm.Contracts.csproj" Type="Classic C#" />
+    <Project Path="src\CRM\AppointMe.Crm.Tests\AppointMe.Crm.Tests.csproj" Type="Classic C#" />
+    <Project Path="src\CRM\AppointMe.Crm\AppointMe.Crm.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="compose.yaml" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="src\AppointMe.Aspire\AppointMe.Aspire.csproj" Type="Classic C#" />
+  <Project Path="src\AppointMe.Shared\AppointMe.Shared.csproj" Type="Classic C#" />
+  <Project Path="src\AppointMe.Web\AppointMe.Web.csproj" Type="Classic C#" />
+</Solution>

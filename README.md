@@ -39,10 +39,10 @@ Both produce an identical running app — same images, ports, credentials, and s
 |---|---|---|
 | [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) | Builds and runs the API and the Aspire host | `dotnet --version` should report `10.x` |
 | [Docker](https://www.docker.com/products/docker-desktop/) (running) | Hosts SQL Server, Keycloak, and Mailpit containers | Docker Desktop or any OCI-compatible runtime |
-| [Node.js 22+](https://nodejs.org/) & [Yarn](https://yarnpkg.com/) | Builds and serves the React frontend | `corepack enable` gives you Yarn |
+| [Node.js 22+](https://nodejs.org/) | Builds and serves the React frontend | npm ships with Node — nothing else to install. With Aspire (Option A) the frontend's `npm install` runs automatically on first start |
 | HTTPS dev certificate | Frontend and services run over HTTPS | `dotnet dev-certs https --trust` |
 
-> First run pulls container images and restores NuGet/Yarn packages, so it takes a few minutes. Subsequent runs are fast — the SQL Server, Keycloak, and Mailpit containers are persistent and reused across restarts.
+> First run pulls container images and restores NuGet/npm packages, so it takes a few minutes. Subsequent runs are fast — the SQL Server, Keycloak, and Mailpit containers are persistent and reused across restarts.
 
 ### Clone and trust the dev cert
 
@@ -76,7 +76,7 @@ What happens on startup, with no action from you:
 - The `appointme` Keycloak realm (clients, roles, mappers) is imported.
 - EF Core migrations are applied to every module's schema.
 - Demo customers and appointments are seeded (Development only).
-- The API starts, then the Vite frontend.
+- The frontend's npm dependencies are installed automatically, then the API starts, followed by the Vite frontend.
 
 ### Option B — Docker Compose
 
@@ -97,8 +97,8 @@ dotnet run --project src/AppointMe.Api
 
 # 4. In a second terminal, run the frontend
 cd src/AppointMe.Frontend
-yarn install
-yarn dev
+npm install
+npm run dev
 ```
 
 Then open **https://localhost:5173**. To stop the services, `docker compose stop` (keeps data) or `docker compose down` (removes the containers; SQL Server and Keycloak data survive in named volumes — add `-v` to wipe them too).
@@ -136,6 +136,12 @@ The app manages its own sign-up — you don't register through Keycloak directly
 
 That's it — you're up and running.
 
+### Or skip sign-up: instant demo login
+
+Just want to look around? Open **https://localhost:5173/api/v1/login/demo** to log straight in as a pre-provisioned demo user (`demo@appointme.dev`) — no sign-up form, password, or email verification. It's a real OIDC login (the same one-click flow behind the [public live demo](#live-demo)), running against your local stack, that redirects you into the app; from there, complete onboarding to create your company.
+
+Enabled out of the box in local development (`Demo:Enabled` in `appsettings.Development.json`) and inert in production — the endpoint returns 404 when disabled.
+
 ## Project layout
 
 ```
@@ -172,14 +178,14 @@ dotnet test                                          # everything
 dotnet test --filter "FullyQualifiedName~TestName"   # a single test
 
 # Frontend — from src/AppointMe.Frontend
-yarn install
-yarn dev            # dev server on https://localhost:5173
-yarn build          # production build
-yarn lint           # ESLint
-yarn generate:api   # regenerate the typed API client from the backend OpenAPI spec
+npm install
+npm run dev            # dev server on https://localhost:5173
+npm run build          # production build
+npm run lint           # ESLint
+npm run generate:api   # regenerate the typed API client from the backend OpenAPI spec
 ```
 
-> When you change the backend contract (endpoints, request/response shapes, routes, or auth attributes), restart the API and run `yarn generate:api` to keep the frontend's typed client in sync.
+> When you change the backend contract (endpoints, request/response shapes, routes, or auth attributes), restart the API and run `npm run generate:api` to keep the frontend's typed client in sync.
 
 ## Tech stack
 

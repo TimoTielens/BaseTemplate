@@ -1,6 +1,8 @@
 using AppointMe.Api.ApiVersioning;
 using AppointMe.Api.Authentication;
+using AppointMe.Api.Authentication.DemoLogin;
 using AppointMe.Api.Authorization;
+using AppointMe.Api.DataProtection;
 using AppointMe.Api.ErrorHandling;
 using AppointMe.Api.Hangfire;
 using AppointMe.Api.Json;
@@ -15,7 +17,6 @@ using AppointMe.Organizations.Configuration;
 using AppointMe.Shared.Configuration;
 using AppointMe.Shared.Endpoints;
 using JasperFx;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +45,8 @@ builder.Services
     .AddCrmModule()
     .AddBookingModule();
 
+builder.Services.AddDemoMode(builder.Configuration);
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -51,15 +54,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownProxies.Clear();
 });
 
-var dataProtection = builder.Services.AddDataProtection().SetApplicationName("appointme");
-var dataProtectionConnectionString = builder.Configuration.GetConnectionString("DataProtectionStorage");
-if (!string.IsNullOrWhiteSpace(dataProtectionConnectionString))
-{
-    dataProtection.PersistKeysToAzureBlobStorage(
-        dataProtectionConnectionString,
-        containerName: "data-protection-keys",
-        blobName: "keys.xml");
-}
+builder.Services.AddAppointMeDataProtection(builder.Configuration);
 
 builder.Host.AddWolverine(builder.Configuration, builder.Environment, isCodegen);
 

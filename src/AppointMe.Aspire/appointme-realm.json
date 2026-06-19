@@ -27,7 +27,7 @@
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
   "sslRequired": "external",
-  "registrationAllowed": false,
+  "registrationAllowed": true,
   "registrationEmailAsUsername": true,
   "rememberMe": true,
   "verifyEmail": true,
@@ -482,6 +482,27 @@
       },
       "notBefore": 0,
       "groups": []
+    },
+    {
+      "id": "d3f8c2a1-5b6e-4c7d-8e9f-0a1b2c3d4e5f",
+      "username": "demo@appointme.dev",
+      "email": "demo@appointme.dev",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "John",
+      "lastName": "Doe",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "AppointMe1",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "default-roles-appointme"
+      ],
+      "notBefore": 0,
+      "groups": []
     }
   ],
   "scopeMappings": [
@@ -760,7 +781,7 @@
       "consentRequired": false,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": false,
       "publicClient": true,
       "frontchannelLogout": true,

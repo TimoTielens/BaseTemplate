@@ -34,7 +34,8 @@ var appointmeApi = builder.AddProject<AppointMe_Api>("appointme-api")
     .WaitFor(mailpit)
     .WithExternalHttpEndpoints();
 
-builder.AddViteApp(name: "appointme-frontend", workingDirectory: "../AppointMe.Frontend", packageManager: "yarn")
+builder.AddViteApp(name: "appointme-frontend", workingDirectory: "../AppointMe.Frontend", packageManager: "npm")
+    .WithNpmPackageInstallation()
     .WithHttpsEndpoint(port: 5173, env: "PORT")
     .WithReference(appointmeApi)
     .WaitFor(appointmeApi);

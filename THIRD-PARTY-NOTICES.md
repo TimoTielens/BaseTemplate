@@ -6,7 +6,7 @@ open-source components that remain under **their own** licenses.
 ## Do you need to ship these license files?
 
 For the way AppointMe consumes them — as package dependencies pulled by NuGet and
-Yarn at build time — you are **not** required to copy each dependency's license
+npm at build time — you are **not** required to copy each dependency's license
 text into this repository. Those packages travel with their own licenses through
 the package managers.
 

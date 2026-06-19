@@ -19,16 +19,16 @@ dotnet run --project src/AppointMe.Api  # Run API
 ### Frontend Only
 ```bash
 cd src/AppointMe.Frontend
-yarn install
-yarn dev          # Development server (port 5173)
-yarn build        # Production build
-yarn lint         # ESLint
-yarn generate:api # Regenerate API client from OpenAPI spec (see /regenerate-api skill)
+npm install
+npm run dev          # Development server (port 5173)
+npm run build        # Production build
+npm run lint         # ESLint
+npm run generate:api # Regenerate API client from OpenAPI spec (see /regenerate-api skill)
 ```
 
 ### Regenerating the frontend API client after backend contract changes
 
-After any change that alters the OpenAPI surface — new/renamed/removed endpoint, changed `*Request.cs`/`*Response.cs` shape, changed route or HTTP verb, changed auth/permission attributes on an endpoint — invoke the `/regenerate-api` skill **in the same task**. It waits for the API to be reachable on `https://localhost:7233`, runs `yarn generate:api`, and reports the diff on `src/AppointMe.Frontend/src/api/`. The backend must be restarted (Aspire dashboard → restart `appointme-api`, or relaunch `dotnet run` in `src/AppointMe.Aspire`) so orval reads the new contract — a reachable-but-stale backend silently produces a stale client.
+After any change that alters the OpenAPI surface — new/renamed/removed endpoint, changed `*Request.cs`/`*Response.cs` shape, changed route or HTTP verb, changed auth/permission attributes on an endpoint — invoke the `/regenerate-api` skill **in the same task**. It waits for the API to be reachable on `https://localhost:7233`, runs `npm run generate:api`, and reports the diff on `src/AppointMe.Frontend/src/api/`. The backend must be restarted (Aspire dashboard → restart `appointme-api`, or relaunch `dotnet run` in `src/AppointMe.Aspire`) so orval reads the new contract — a reachable-but-stale backend silently produces a stale client.
 
 Do **not** invoke `/regenerate-api` for backend-only changes that don't affect the contract (internal handlers, domain events, EF config, migrations, tests).
 
