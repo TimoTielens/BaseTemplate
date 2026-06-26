@@ -52,6 +52,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointMe.Booking.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointMe.Identity.Tests", "src\Identity\AppointMe.Identity.Tests\AppointMe.Identity.Tests.csproj", "{5762E62F-113C-4D70-AC7C-D96B9FCD1F4E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{9F528FBD-0112-4CD0-88E8-2CA183E91BCD}"
+	ProjectSection(SolutionItems) = preProject
+		docs\identity-resolution.md = docs\identity-resolution.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
