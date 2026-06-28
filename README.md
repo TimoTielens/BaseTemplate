@@ -15,7 +15,7 @@ It's a shared public demo seeded with sample data — other visitors' activity m
 ## What's inside
 
 - **Modular monolith** — Identity, Organizations, CRM, and Booking, each a bounded context with its own `DbContext` and schema, organized by vertical slice.
-- **Auth done properly** — OIDC with a hybrid scheme: JWT Bearer for the API, cookies for browser flows. Keycloak for local development, Entra External ID for the Azure deployment — swappable behind the app's own provisioning flow. Sign-up, email verification, and password reset included.
+- **Auth done properly** — OIDC with a hybrid scheme: JWT Bearer for the API, cookies for browser flows. Keycloak for local development, Entra External ID for the Azure deployment — swappable behind the app's own provisioning flow. Sign-up, email verification, and password reset included. For how the app separates *identity* from *principal* and resolves both across every entry point, see the two-part deep dive [How does your domain know your user?](./docs/identity-resolution.md).
 - **Multi-tenancy** — company resolution via header/claim with EF Core query filters on a command path, raw Dapper reads carry the tenant predicate by convention.
 - **CQRS + DDD** — writes through EF Core aggregates and domain events; reads through Dapper. Async messaging via Wolverine with a durable SQL transport.
 - **Permission system** — auto-discovered, role-based permissions with default grant policies and conflic resolutions strategies.
