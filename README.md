@@ -158,6 +158,12 @@ src/
 
 The codebase follows Domain-Driven Design with **vertical slice architecture** — each use case owns its command, handler, endpoint, and request/response in a single folder. For the full architecture guide, conventions, and patterns, see [`CLAUDE.md`](./CLAUDE.md).
 
+## Architecture notes
+
+Deeper write-ups on how specific parts of AppointMe are designed:
+
+- [How does your domain know your user?](./docs/identity-resolution.md) — a two-part deep dive on separating *identity* from *principal* and resolving both across HTTP, Wolverine, background jobs, and domain event handlers.
+
 ## Common commands
 
 ```bash
