@@ -26,7 +26,7 @@ var mailpit = builder.AddContainer("Mailpit", "axllent/mailpit")
     .WithEndpoint(1026, 1025, name: "smtp-server")
     .WithLifetime(ContainerLifetime.Persistent);
 
-var appointmeApi = builder.AddProject<AppointMe_Api>("appointme-api")
+var appointmeApi = builder.AddProject<AppointMe_Api>("appointme-api", launchProfileName: "https")
     .WithReference(database)
     .WithReference(keycloak)
     .WaitFor(database)

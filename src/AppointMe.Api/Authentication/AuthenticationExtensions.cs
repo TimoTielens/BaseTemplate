@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using AppointMe.Api.Authentication.EntraExternalId;
 using AppointMe.Api.Authentication.Keycloak;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -63,7 +64,6 @@ internal static class AuthenticationExtensions
                     oidc.ResponseType = OpenIdConnectResponseType.Code;
                     oidc.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     oidc.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
-                    oidc.SaveTokens = true;
 
                     oidc.Scope.Add("openid");
                     oidc.Scope.Add("profile");
@@ -80,6 +80,25 @@ internal static class AuthenticationExtensions
                             {
                                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                                 context.HandleResponse();
+                            }
+
+                            return Task.CompletedTask;
+                        },
+                        OnTokenValidated = context =>
+                        {
+                            // Persist only the id_token (logout sends it as id_token_hint). SaveTokens would
+                            // also put the access and refresh tokens into the auth cookie, pushing localhost
+                            // request headers past Keycloak's 8KB limit.
+                            if (context.TokenEndpointResponse?.IdToken is { Length: > 0 } idToken)
+                            {
+                                context.Properties?.StoreTokens(
+                                [
+                                    new AuthenticationToken
+                                    {
+                                        Name = OpenIdConnectParameterNames.IdToken,
+                                        Value = idToken
+                                    }
+                                ]);
                             }
 
                             return Task.CompletedTask;
