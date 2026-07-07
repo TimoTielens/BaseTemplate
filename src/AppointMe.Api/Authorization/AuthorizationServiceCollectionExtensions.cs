@@ -15,6 +15,9 @@ public static class AuthorizationServiceCollectionExtensions
 
         services
             .AddAuthorizationBuilder()
+            .AddPolicy(HangfireDashboardPolicy.Name, policy => policy
+                .RequireAuthenticatedUser()
+                .AddRequirements(new RegisteredUserRequirement()))
             .SetFallbackPolicy(new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .AddRequirements(new RegisteredUserRequirement())
